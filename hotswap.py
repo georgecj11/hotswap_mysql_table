@@ -46,8 +46,9 @@ def swap( dbname , tableName, sql , autoUpdateCol = "auto_update_timestamp" ):
 		subprocess.call("mysql -p"+ password +" -u "+ username+" hotswap < " +  dumpFile,  shell=True)
 		print "New table is restored " 
 
-		cursor.execute("SELECT NOW() into @temp_max_time")
-		cursor.execute("SELECT id into @temp_max_id from " + tempTable +" order by id desc limit 1")
+		#cursor.execute("SELECT NOW() into @temp_max_time")
+		# assumption : too many insert, wchih implies the last record is almost the last write
+		cursor.execute("SELECT id into @temp_max_id, "+autoUpdateCol+" into @temp_max_time from " + tempTable +" order by id desc limit 1")
 		cursor.execute("SELECT @temp_max_id as max_id, @temp_max_time as max_time")
 		max_values = cursor.fetchone()
 		print "Max values in table are -> " + str(max_values["max_time"]) + "/" + str(max_values["max_id"])
