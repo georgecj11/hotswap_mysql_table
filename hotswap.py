@@ -64,8 +64,8 @@ def swap( dbname , tableName, sql , autoUpdateCol = "auto_update_timestamp" ):
 		subprocess.call(secondaryDump + " --where '"+autoUpdateCol+" >  \""+ str(max_values["max_time"]) + "\"' >> " + deltaFile , shell=True)
 		subprocess.call("mysql -p"+ password +" -u "+ username+" hotswap < " +  deltaFile,  shell=True)
 
-		cursor.execute("SELECT NOW() into @temp_max_time")
-		cursor.execute("SELECT id into @temp_max_id from " + tempTable +" order by id desc limit 1")
+		#cursor.execute("SELECT NOW() into @temp_max_time")
+		cursor.execute("SELECT id into @temp_max_id , "+autoUpdateCol+" into @temp_max_time from " + tempTable +" order by id desc limit 1")
 		cursor.execute("SELECT @temp_max_id as max_id, @temp_max_time as max_time")
 		max_values = cursor.fetchone()
 		print "After major delta Max values in table are -> " + str(max_values["max_time"]) + "/" + str(max_values["max_id"])
