@@ -3,7 +3,7 @@ To hotswap a table
 
 Assumptions : 
 	id is the auto_increment column
-	indexes present in both id and autoUpdateCol separately
+	indexes present in both on and autoUpdateCol separately
 """
 import MySQLdb
 import subprocess
