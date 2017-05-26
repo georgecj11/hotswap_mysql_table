@@ -72,15 +72,20 @@ def swap( dbname , tableName, sql , autoUpdateCol = "auto_update_timestamp" ):
 		cursor.execute("INSERT INTO " + tempTable + " (id) values ("+str(max_values["max_id"] + 10000)+")")
 
 		print ("*"*20) + "PHASE 4 : Rename Table " + ("*"*20)
-		oldTable = tempTable + "_" + str(int(time.time()))
+		timestamp= str(int(time.time()))
+		oldTable = tempTable + "_" + timestamp
 		cursor.execute("RENAME TABLE  "+originalTable +" to  " + oldTable + ", "+ tempTable + " to "+ originalTable)
 		print "Swapped the tables now"
 
 
 		print ("*"*20) + "PHASE 5 : Delta dump (data changed phase 3) " + ("*"*20)
 		deltaFile = "/mnt/hotswap/"+ tempTable + "_3.sql"
-		subprocess.call(secondaryDump + " --where 'id > "+ str(max_values["max_id"]) + " '> " + deltaFile , shell=True)
-		subprocess.call(secondaryDump + " --where '"+autoUpdateCol+" >  \""+ str(max_values["max_time"]) + "\" AND id < "+str(max_values["max_id"])+ "' >> " + deltaFile , shell=True)
+		finalDump = "mysqldump -p"+ password +" -u "+ username+" " + oldTable.replace(".", " ", 1) \
+		  + " --no-create-info --skip-tz-utc --complete-insert --compact --skip-comments --skip-lock-tables --replace  " 
+
+		subprocess.call(finalDump + " --where 'id > "+ str(max_values["max_id"]) + " '> " + deltaFile , shell=True)
+		subprocess.call(finalDump + " --where '"+autoUpdateCol+" >  \""+ str(max_values["max_time"]) + "\" AND id < "+str(max_values["max_id"])+ "' >> " + deltaFile , shell=True)
+		subprocess.call("sed -i s/"+tableName+"_"+timestamp+"/"+tableName+"/g deltaFile ")
 		subprocess.call("mysql -p"+ password +" -u "+ username+" " + dbname +"  < " +  deltaFile,  shell=True)
 		print "Voila!! You are done with altering the table"
 
