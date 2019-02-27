@@ -1,6 +1,6 @@
 # hotswap mysql table
 
-To alter a mysql table with minimal downtime
+To alter a mysql table with minimal downtime.
 
 Assumptions : 
 
