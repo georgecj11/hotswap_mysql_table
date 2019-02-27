@@ -1,4 +1,4 @@
-# hotswap_mysql_table
+# hotswap mysql table
 
 To alter a mysql table with minimal downtime
 
