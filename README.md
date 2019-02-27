@@ -1,10 +1,10 @@
-# Hotswap mysql table ( Alter)
+# Hotswap mysql table 
 
-To alter a mysql table with minimal downtime in two steps
+To alter a mysql table with minimal downtime 
 
 Assumptions : 
 
-	- id is the auto_increment column
+	- id is the auto_increment column of the table 
 	- indexes present in both id and autoUpdateCol separately
 	- exception handling can be better; As DDL cannot be reverted/rollbacked
 	- works for addition of column, changing the columns meta, adding/removing indices
