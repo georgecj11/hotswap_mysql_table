@@ -1,6 +1,6 @@
 # Hotswap mysql table 
 
-To alter a mysql table with minimal downtime 
+To alter a mysql table with minimal downtime. I have used this to alter table with size more than even 400GB.
 
 Assumptions : 
 
